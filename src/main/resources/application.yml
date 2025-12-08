@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: demo
+
+  # ============================================================
+  # PostgreSQL Configuration
+  # ============================================================
+  datasource:
+    url: jdbc:postgresql://localhost:5432/demodb
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  # ============================================================
+  # JPA Configuration
+  # ============================================================
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  # ============================================================
+  # Flyway Configuration
+  # ============================================================
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+  # ============================================================
+  # Pagination Configuration
+  # Decisao tecnica: ADR-004 - YAML como Formato Padrao de Configuracao
+  # Relacionado: ADR-003 - Configuracao de Limites de Paginacao
+  # ============================================================
+  data:
+    web:
+      pageable:
+        # Tamanho padrao quando cliente nao especifica 'size' no request
+        # Exemplo: GET /api/products -> retorna 20 registros
+        default-page-size: 20
+
+        # Limite maximo de registros por requisicao (protecao contra abuso)
+        # Exemplo: GET /api/products?size=500 -> limitado a 100 registros
+        # Sem esta configuracao: SEM LIMITE (vulnerabilidade critica)
+        max-page-size: 100
+
+        # Indexacao baseada em zero (page=0 = primeira pagina)
+        # GET /api/products?page=0 -> primeira pagina
+        # GET /api/products?page=1 -> segunda pagina
+        one-indexed-parameters: false
+
